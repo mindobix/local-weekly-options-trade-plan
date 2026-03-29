@@ -42,6 +42,17 @@ function updateNavLabel() {
   }
 }
 
+// Returns next week's Monday if today is Sunday, otherwise this week's Monday
+function dailyDefaultWeek() {
+  const monday = getMondayOf(todayStr());
+  if (new Date().getDay() === 0) {
+    const d = new Date(monday + 'T12:00:00');
+    d.setDate(d.getDate() + 7);
+    return d.toISOString().slice(0, 10);
+  }
+  return monday;
+}
+
 // ── View toggle ────────────────────────────────────────────
 function switchView(v) {
   APP_STATE.view = v;
@@ -51,6 +62,8 @@ function switchView(v) {
     const d = new Date(APP_STATE.weekOf + 'T12:00:00');
     APP_STATE.year  = d.getFullYear();
     APP_STATE.month = d.getMonth() + 1;
+  } else if (v === 'weekly' || v === 'daily') {
+    APP_STATE.weekOf = dailyDefaultWeek();
   }
   renderView();
 }
@@ -171,26 +184,29 @@ function maybeSeedDemo() {
     return d.toISOString().slice(0, 10);
   })();
 
-  const demo = [
-    { id: uid(), symbol:'TSLA', optionType:'call', strikePrice:380, expiryDate:nextFri, triggerPrice:369, targets:[383,390], stopPrice:360, weekOf:mon,     status:'active',    notes:'Breakout above 370 resistance.', customColor:'#f43f5e', createdAt:mon },
-    { id: uid(), symbol:'META', optionType:'call', strikePrice:610, expiryDate:nextFri, triggerPrice:600, targets:[613,627], stopPrice:590, weekOf:mon,     status:'triggered', notes:'Earnings momentum play.',          customColor:'#3b82f6', createdAt:mon },
-    { id: uid(), symbol:'SPX',  optionType:'call', strikePrice:6600,expiryDate:nextFri, triggerPrice:6521,targets:[6650],   stopPrice:6470,weekOf:mon,     status:'active',    notes:'Weekly call above 6521.',           customColor:'#a855f7', createdAt:mon },
-    { id: uid(), symbol:'SPX',  optionType:'put',  strikePrice:6430,expiryDate:nextFri, triggerPrice:6500,targets:[6427],   stopPrice:6521,weekOf:mon,     status:'active',    notes:'Weekly put hedge.',                 customColor:'#a855f7', createdAt:mon },
-    { id: uid(), symbol:'NVDA', optionType:'call', strikePrice:900, expiryDate:lastFri, triggerPrice:890, targets:[910,930],stopPrice:875, weekOf:lastMon,  status:'hit',       notes:'AI semis momentum.',                customColor:'#22c55e', createdAt:lastMon },
-    { id: uid(), symbol:'AAPL', optionType:'put',  strikePrice:220, expiryDate:lastFri, triggerPrice:225, targets:[215,210],stopPrice:230, weekOf:lastMon,  status:'stopped',   notes:'Breakdown below 225 support.',      customColor:'#64748b', createdAt:lastMon },
-  ];
-  save(demo);
+  // const demo = [
+  //   { id: uid(), symbol:'TSLA', optionType:'call', strikePrice:380, expiryDate:nextFri, triggerPrice:369, targets:[383,390], stopPrice:360, weekOf:mon,     status:'active',    notes:'Breakout above 370 resistance.', customColor:'#f43f5e', createdAt:mon },
+  //   { id: uid(), symbol:'META', optionType:'call', strikePrice:610, expiryDate:nextFri, triggerPrice:600, targets:[613,627], stopPrice:590, weekOf:mon,     status:'triggered', notes:'Earnings momentum play.',          customColor:'#3b82f6', createdAt:mon },
+  //   { id: uid(), symbol:'SPX',  optionType:'call', strikePrice:6600,expiryDate:nextFri, triggerPrice:6521,targets:[6650],   stopPrice:6470,weekOf:mon,     status:'active',    notes:'Weekly call above 6521.',           customColor:'#a855f7', createdAt:mon },
+  //   { id: uid(), symbol:'SPX',  optionType:'put',  strikePrice:6430,expiryDate:nextFri, triggerPrice:6500,targets:[6427],   stopPrice:6521,weekOf:mon,     status:'active',    notes:'Weekly put hedge.',                 customColor:'#a855f7', createdAt:mon },
+  //   { id: uid(), symbol:'NVDA', optionType:'call', strikePrice:900, expiryDate:lastFri, triggerPrice:890, targets:[910,930],stopPrice:875, weekOf:lastMon,  status:'hit',       notes:'AI semis momentum.',                customColor:'#22c55e', createdAt:lastMon },
+  //   { id: uid(), symbol:'AAPL', optionType:'put',  strikePrice:220, expiryDate:lastFri, triggerPrice:225, targets:[215,210],stopPrice:230, weekOf:lastMon,  status:'stopped',   notes:'Breakdown below 225 support.',      customColor:'#64748b', createdAt:lastMon },
+  // ];
+  // save(demo);
 }
 
 // ── Init ───────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  maybeSeedDemo();
+  //maybeSeedDemo();
   initModal();
 
   // Restore last view from localStorage
   const savedView = localStorage.getItem('wotp-last-view');
   if (savedView && ['monthly', 'weekly', 'daily'].includes(savedView)) {
     APP_STATE.view = savedView;
+    if (savedView === 'daily' || savedView === 'weekly') {
+      APP_STATE.weekOf = dailyDefaultWeek();
+    }
   }
 
   // View buttons

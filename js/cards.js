@@ -75,7 +75,7 @@ function renderAddCard(weekOf) {
 <div class="add-card" onclick="openAddModal('${esc(weekOf)}')">
   <div class="add-card-inner">
     <div class="add-icon">+</div>
-    <span>Add WOTP</span>
+    <span>Add Trade Plan</span>
   </div>
 </div>`;
 }
@@ -155,7 +155,7 @@ function renderWeeklyView(monday, ideas) {
     </div>
     <div class="week-meta">
       ${filtered.length ? `<span class="meta-chip calls">${callCount}C</span><span class="meta-chip puts">${putCount}P</span>` : ''}
-      <span class="meta-chip total">${filtered.length} ideas</span>
+      <span class="meta-chip total">${filtered.length} trade plan${filtered.length !== 1 ? 's' : ''}</span>
     </div>
   </div>
   <div class="cards-grid weekly-grid">
@@ -194,7 +194,7 @@ function renderDailyView(monday, ideas) {
     </div>
     <div class="week-meta">
       ${dayIdeas.length ? `<span class="meta-chip calls">${callCount}C</span><span class="meta-chip puts">${putCount}P</span>` : ''}
-      <span class="meta-chip total">${dayIdeas.length} idea${dayIdeas.length !== 1 ? 's' : ''}</span>
+      <span class="meta-chip total">${dayIdeas.length} trade plan${dayIdeas.length !== 1 ? 's' : ''}</span>
     </div>
   </div>
   <div class="cards-grid">

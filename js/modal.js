@@ -121,7 +121,7 @@ function _getOptType() {
 }
 
 function _populateForm(idea) {
-  document.getElementById('modal-title').textContent = idea ? 'Edit Idea' : 'Add Idea';
+  document.getElementById('modal-title').textContent = idea ? 'Edit Trade Plan' : 'Add Trade Plan';
   document.getElementById('f-symbol').value   = idea?.symbol      || '';
   _setOptType(idea?.optionType || 'call');
   document.getElementById('f-strike').value   = idea?.strikePrice ?? '';
