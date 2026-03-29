@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weekly Options Trade Plan</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<!-- ── Header ────────────────────────────────────────────── -->
+<header class="header">
+  <!-- Top row -->
+  <div class="header-top">
+    <div class="header-logo">
+      <div class="logo-icon">WOTP</div>
+      <div class="logo-text">Weekly Options Trade Plan</div>
+    </div>
+
+    <div class="header-sep"></div>
+
+    <!-- View toggle -->
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="monthly">Monthly</button>
+      <button class="view-btn"        data-view="weekly">Weekly</button>
+      <button class="view-btn"        data-view="daily">Daily</button>
+    </div>
+
+    <!-- Nav controls -->
+    <div class="nav-controls" id="nav-controls">
+      <button class="nav-arrow" id="nav-prev">&#8249;</button>
+      <span id="nav-label">Loading…</span>
+      <button class="nav-arrow" id="nav-next">&#8250;</button>
+      <button class="nav-today-btn" id="nav-today">Today</button>
+    </div>
+
+    <div class="header-spacer"></div>
+
+    <!-- Util buttons -->
+    <div class="header-utils">
+      <button class="util-btn" id="btn-export" title="Download backup JSON">Backup</button>
+      <button class="util-btn" id="btn-import" title="Restore from backup JSON">Restore</button>
+      <button class="btn-add" id="btn-add">+ Add WOTP</button>
+    </div>
+  </div>
+
+  <!-- Filter row -->
+  <div class="header-filter-row">
+    <div class="filter-type-group">
+      <button class="filter-type-btn active" data-val="all">All</button>
+      <button class="filter-type-btn" data-val="call">Calls</button>
+      <button class="filter-type-btn" data-val="put">Puts</button>
+    </div>
+    <select class="filter-status" id="filter-status">
+      <option value="all">All Status</option>
+      <option value="active">Active</option>
+      <option value="triggered">Triggered</option>
+      <option value="hit">Target Hit</option>
+      <option value="stopped">Stopped</option>
+    </select>
+    <input class="filter-search" id="filter-search" type="text" placeholder="Search ticker…" />
+  </div>
+</header>
+
+<!-- ── Main content ───────────────────────────────────────── -->
+<div class="main-wrap">
+  <div id="main-content"></div>
+</div>
+
+<!-- ── Overlay ────────────────────────────────────────────── -->
+<div class="overlay" id="overlay"></div>
+
+<!-- ── Add / Edit Modal ───────────────────────────────────── -->
+<div class="modal" id="modal">
+  <div class="modal-hdr">
+    <span class="modal-title" id="modal-title">Add Idea</span>
+    <button class="modal-close" id="modal-cancel">✕</button>
+  </div>
+
+  <div class="modal-body">
+
+    <!-- Symbol & Type -->
+    <div class="form-section">
+      <div class="form-section-label">Ticker & Option Type</div>
+      <div class="form-row">
+        <div class="fg">
+          <label>Symbol</label>
+          <input id="f-symbol" type="text" placeholder="TSLA" style="text-transform:uppercase" />
+        </div>
+        <div class="fg">
+          <label>Option Type</label>
+          <div class="radio-row">
+            <div class="radio-opt">
+              <input type="radio" name="opt-type" id="r-call" value="call" />
+              <label for="r-call" class="call">&#9650; Call</label>
+            </div>
+            <div class="radio-opt">
+              <input type="radio" name="opt-type" id="r-put"  value="put"  />
+              <label for="r-put"  class="put">&#9660; Put</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option details -->
+    <div class="form-section">
+      <div class="form-section-label">Option Details</div>
+      <div class="form-row cols3">
+        <div class="fg">
+          <label>Strike Price</label>
+          <input id="f-strike" type="number" step="0.5" placeholder="380" />
+        </div>
+        <div class="fg">
+          <label>Expiry Date</label>
+          <input id="f-expiry" type="date" />
+        </div>
+        <div class="fg">
+          <label>Trigger (AT) Price</label>
+          <input id="f-trigger" type="number" step="0.01" placeholder="369" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Targets & Stop -->
+    <div class="form-section">
+      <div class="form-section-label">Targets &amp; Stop</div>
+      <div class="form-row cols3">
+        <div class="fg">
+          <label>🎯 Target 1</label>
+          <input id="f-t1" type="number" step="0.01" placeholder="383" />
+        </div>
+        <div class="fg">
+          <label>🎯 Target 2 <span class="muted">(opt)</span></label>
+          <input id="f-t2" type="number" step="0.01" placeholder="390" />
+        </div>
+        <div class="fg">
+          <label>🎯 Target 3 <span class="muted">(opt)</span></label>
+          <input id="f-t3" type="number" step="0.01" placeholder="" />
+        </div>
+      </div>
+      <div class="form-row cols1" style="margin-top:10px">
+        <div class="fg">
+          <label>✕ Stop Price</label>
+          <input id="f-stop" type="number" step="0.01" placeholder="360" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Week & Status -->
+    <div class="form-section">
+      <div class="form-section-label">Schedule &amp; Status</div>
+      <div class="form-row cols3">
+        <div class="fg">
+          <label>Created Date</label>
+          <input id="f-created" type="date" />
+        </div>
+        <div class="fg">
+          <label>Week Of <span class="muted">(Monday)</span></label>
+          <input id="f-week" type="date" />
+        </div>
+        <div class="fg">
+          <label>Status</label>
+          <select id="f-status">
+            <option value="active">Active</option>
+            <option value="triggered">Triggered</option>
+            <option value="hit">Target Hit</option>
+            <option value="stopped">Stopped</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Color & Notes -->
+    <div class="form-section">
+      <div class="form-section-label">Appearance &amp; Notes</div>
+
+      <!-- Card Color -->
+      <div class="fg" style="margin-bottom:14px">
+        <label>Card Color <span class="muted" id="color-label-hint">(auto from ticker)</span></label>
+        <div class="swatch-grid" id="swatch-grid">
+          <!-- 24 presets + Other — rendered by JS -->
+        </div>
+        <!-- Hidden native color picker for "Other" -->
+        <input id="f-color-picker" type="color" style="display:none" />
+        <!-- Hidden text value read by modal.js -->
+        <input id="f-color" type="hidden" value="" />
+      </div>
+
+      <div class="fg">
+        <label>Notes <span class="muted">(opt)</span></label>
+        <textarea id="f-notes" placeholder="Setup context, catalyst…"></textarea>
+      </div>
+    </div>
+
+  </div><!-- /modal-body -->
+
+  <div class="modal-ftr">
+    <button class="btn-cancel" id="modal-cancel-btn">Cancel</button>
+    <button class="btn-save"   id="modal-save">Save Idea</button>
+  </div>
+</div>
+
+<!-- ── Scripts ─────────────────────────────────────────────── -->
+<script src="js/storage.js"></script>
+<script src="js/helpers.js"></script>
+<script src="js/modal.js"></script>
+<script src="js/cards.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
+});
+</script>
+
+</body>
+</html>
