@@ -182,7 +182,6 @@ function saveIdea() {
   if (_editId) {
     const idx = ideas.findIndex(i => i.id === _editId);
     if (idx !== -1) {
-      idea.createdAt = ideas[idx].createdAt;
       ideas[idx] = idea;
     }
   } else {
