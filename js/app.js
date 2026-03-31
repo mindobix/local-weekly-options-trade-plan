@@ -42,12 +42,16 @@ function updateNavLabel() {
   }
 }
 
-// Returns next week's Monday
+// Returns next week's Monday if today is Sunday, otherwise this week's Monday
 function dailyDefaultWeek() {
   const monday = getMondayOf(todayStr());
-  const d = new Date(monday + 'T12:00:00');
-  d.setDate(d.getDate() + 7);
-  return d.toISOString().slice(0, 10);
+  const today = new Date();
+  if (today.getDay() === 0) {
+    const d = new Date(monday + 'T12:00:00');
+    d.setDate(d.getDate() + 7);
+    return d.toISOString().slice(0, 10);
+  }
+  return monday;
 }
 
 // ── View toggle ────────────────────────────────────────────
